@@ -107,10 +107,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ff0e3d87b95dde41a22dc0dc829db83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  path: []
+  pathInd: 0
   maxHealth: 100
   currentHealth: 0
-  speed: 0.5
-  player: {fileID: 0}
+  speed: 25
+  digRange: 1
+  digDamage: 1000
 --- !u!54 &1045298680592683248
 Rigidbody:
   m_ObjectHideFlags: 0

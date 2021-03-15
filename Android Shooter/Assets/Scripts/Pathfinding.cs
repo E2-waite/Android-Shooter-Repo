@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class Pathfinding : MonoBehaviour
+using Structure;
+public class Pathfinding
 {
     public class Node
     {
@@ -21,35 +21,34 @@ public class Pathfinding : MonoBehaviour
         }
     }
 
-
-    Node[,] node_grid;
-    public List<Vector2Int> final_path = new List<Vector2Int>();
-    public bool path_failed = false;
-    //public  FindPath(GameObject[,] grid)
-    //{
-    //    int grid_x = grid.GetLength(0), grid_y = grid.GetLength(1);
-    //    node_grid = new Node[grid_x, grid_y];
-
-    //    // Create node grid
-    //    for (int y = 0; y < grid_y; y++)
-    //    {
-    //        for (int x = 0; x < grid_x; x++)
-    //        {
-    //            bool is_obstacle = false;
-    //            if (grid[x,y] == null || grid[x,y].CompareTag("Dirt"))
-    //            {
-    //                is_obstacle = true;
-    //            }
-    //            node_grid[x, y] = new Node(is_obstacle, new Vector2Int(x,y));
-    //        }
-    //    }
-    //}
-
-
-    public bool IsPath(Vector2Int start_pos, Vector2Int end_pos)
+    public List<Vector2Int> FindPath(int[,] layout, bool clear, Vector2Int start_pos, Vector2Int end_pos)
     {
-        Node start_node = node_grid[start_pos.x, start_pos.y];
-        Node end_node = node_grid[end_pos.x, end_pos.y];
+        int grid_x = layout.GetLength(0), grid_y = layout.GetLength(1);
+        Node[,] nodeGrid = new Node[grid_x, grid_y];
+
+        // Create node grid
+        for (int y = 0; y < grid_y; y++)
+        {
+            for (int x = 0; x < grid_x; x++)
+            {
+                bool is_obstacle = false;
+                if ((clear && (layout[x, y] == (int)Type.dirt || layout[x, y] == (int)Type.stone)) ||
+                    (!clear && layout[x, y] == (int)Type.stone))
+                {
+                    is_obstacle = true;
+                }
+                nodeGrid[x, y] = new Node(is_obstacle, new Vector2Int(x, y));
+            }
+        }
+
+        return IsPath(nodeGrid, start_pos, end_pos);
+    }
+
+
+    public List<Vector2Int> IsPath(Node[,] nodeGrid, Vector2Int start_pos, Vector2Int end_pos)
+    {
+        Node start_node = nodeGrid[start_pos.x, start_pos.y];
+        Node end_node = nodeGrid[end_pos.x, end_pos.y];
 
         List<Node> open_list = new List<Node>();
         HashSet<Node> closed_list = new HashSet<Node>();
@@ -77,11 +76,10 @@ public class Pathfinding : MonoBehaviour
             if (current_node == end_node)
             {
                 // Path has been found
-                return true;
-                //GetFinalPath(start_node, end_node);
+                return GetFinalPath(start_node, end_node);
             }
 
-            foreach (Node neighbour in GetNeighbourNodes(current_node))
+            foreach (Node neighbour in GetNeighbourNodes(nodeGrid, current_node))
             {
                 // If the neighbour is a wall, or is on the closed list (already checked) skip over it
                 if (neighbour.is_wall || closed_list.Contains(neighbour))
@@ -103,7 +101,9 @@ public class Pathfinding : MonoBehaviour
                 }
             }
         }
-        return false;
+        Debug.Log("Path Failed");
+        // Path has not been found
+        return new List<Vector2Int>();
     }
 
     int GetManhattenDistance(Node node_a, Node node_b)
@@ -113,40 +113,40 @@ public class Pathfinding : MonoBehaviour
         return x_dist + y_dist;
     }
 
-    List<Node> GetNeighbourNodes(Node node)
+    List<Node> GetNeighbourNodes(Node[,] nodeGrid, Node node)
     {
         // Gets all neighbouring nodes (ensuring none are outside of the grid)
         List<Node> neighbour_nodes = new List<Node>();
 
         // Check up
-        if (node.pos.x >= 0 && node.pos.x < node_grid.GetLength(0) &&
-            node.pos.y - 1 >= 0 && node.pos.y - 1 < node_grid.GetLength(1))
+        if (node.pos.x >= 0 && node.pos.x < nodeGrid.GetLength(0) &&
+            node.pos.y - 1 >= 0 && node.pos.y - 1 < nodeGrid.GetLength(1))
         {
-            neighbour_nodes.Add(node_grid[node.pos.x, node.pos.y - 1]);
+            neighbour_nodes.Add(nodeGrid[node.pos.x, node.pos.y - 1]);
         }
         // Check right
-        if (node.pos.x + 1 >= 0 && node.pos.x + 1 < node_grid.GetLength(0) &&
-            node.pos.y >= 0 && node.pos.y < node_grid.GetLength(1))
+        if (node.pos.x + 1 >= 0 && node.pos.x + 1 < nodeGrid.GetLength(0) &&
+            node.pos.y >= 0 && node.pos.y < nodeGrid.GetLength(1))
         {
-            neighbour_nodes.Add(node_grid[node.pos.x + 1, node.pos.y]);
+            neighbour_nodes.Add(nodeGrid[node.pos.x + 1, node.pos.y]);
         }
         // Check down
-        if (node.pos.x >= 0 && node.pos.x < node_grid.GetLength(0) &&
-            node.pos.y + 1 >= 0 && node.pos.y + 1 < node_grid.GetLength(1))
+        if (node.pos.x >= 0 && node.pos.x < nodeGrid.GetLength(0) &&
+            node.pos.y + 1 >= 0 && node.pos.y + 1 < nodeGrid.GetLength(1))
         {
-            neighbour_nodes.Add(node_grid[node.pos.x, node.pos.y + 1]);
+            neighbour_nodes.Add(nodeGrid[node.pos.x, node.pos.y + 1]);
         }
         // Check left
-        if (node.pos.x - 1 >= 0 && node.pos.x - 1 < node_grid.GetLength(0) &&
-            node.pos.y >= 0 && node.pos.y < node_grid.GetLength(1))
+        if (node.pos.x - 1 >= 0 && node.pos.x - 1 < nodeGrid.GetLength(0) &&
+            node.pos.y >= 0 && node.pos.y < nodeGrid.GetLength(1))
         {
-            neighbour_nodes.Add(node_grid[node.pos.x - 1, node.pos.y]);
+            neighbour_nodes.Add(nodeGrid[node.pos.x - 1, node.pos.y]);
         }
 
         return neighbour_nodes;
     }
 
-    void GetFinalPath(Node start_node, Node end_node)
+    List<Vector2Int> GetFinalPath(Node start_node, Node end_node)
     {
         List<Vector2Int> pos_path = new List<Vector2Int>();
         Node current_node = end_node;
@@ -160,6 +160,6 @@ public class Pathfinding : MonoBehaviour
 
         // Path needs to be flipped (worked backwards from the end)
         pos_path.Reverse();
-        final_path = pos_path;
+        return pos_path;
     }
 }

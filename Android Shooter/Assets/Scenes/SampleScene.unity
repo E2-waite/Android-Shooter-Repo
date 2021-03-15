@@ -121,6 +121,53 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &1216538001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1216538003}
+  - component: {fileID: 1216538002}
+  m_Layer: 0
+  m_Name: Hive
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1216538002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1216538001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9362c2ec19f793645a1662949e17bac6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyPrefab: {fileID: 1045298680592683150, guid: 719c9ab3d84896840b7599c82ee772fe,
+    type: 3}
+  path: []
+  enemies: []
+--- !u!4 &1216538003
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1216538001}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 10, y: 0, z: 10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1490319863
 GameObject:
   m_ObjectHideFlags: 0
@@ -132,7 +179,7 @@ GameObject:
   - component: {fileID: 1490319865}
   - component: {fileID: 1490319864}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Level Generator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -150,11 +197,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6506f5ae30e29d54c99dd91a190b1594, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DestroyOnLoad: 1
+  player: {fileID: 1895089384}
   tilePrefabs:
   - {fileID: 0}
   - {fileID: 9183861211587505219, guid: 523ff3cc847bf764ba2286b5efb47744, type: 3}
   - {fileID: 6763272122672045940, guid: 46e5be6c5528c1d4d8cdbf6126f4867f, type: 3}
   - {fileID: 4791250819466330618, guid: d12c23d087b75524a8e21419b98057fb, type: 3}
+  hives:
+  - {fileID: 1216538002}
   levelSize: {x: 10, y: 10}
 --- !u!4 &1490319865
 Transform:
@@ -237,7 +288,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 1
+  orthographic: 0
   orthographic size: 5
   m_Depth: -1
   m_CullingMask:
@@ -408,8 +459,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1895089384}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.49, y: 0, z: -1.29}
-  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_LocalPosition: {x: 50, y: 0, z: 50}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
